@@ -29,13 +29,27 @@ func main() {
 	fmt.Printf("albums: %v\r\n", objs)
 	fmt.Printf("album: %v\r\n", obj)
 
-	err = handlers.AddAlbum("love is hurt", "Andi Topalidis", 56.56)
+	albums := []models.Album{
+		{Title: "love is hurt", Artist: "Andi Topalidis", Price: 56.56},
+		{Title: "graduation", Artist: "Ye", Price: 33.56},
+		{Title: "I'm stay", Artist: "Slava KPSS", Price: 74.56},
+		{Title: "Hello", Artist: "Adel", Price: 96.56},
+		{Title: "5 am in Piter", Artist: "Jubilee", Price: 199.56},
+	}
+	err = handlers.AddAlbum(albums[0])
 	if err != nil {
 		log.Fatal(err)
 	}
 	var new []models.Album
 	new, err = handlers.GetAlbumsByArtis("Andi Topalidis")
 	fmt.Printf("new obj: %v\r\n", new)
+
+	err = handlers.AddAlbums(albums[1:])
+	albs, err := handlers.GetAlbums()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("albums: %v", albs)
 
 	http.ListenAndServe(":8080", nil)
 }

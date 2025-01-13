@@ -8,6 +8,8 @@ import (
 	"os"
 )
 
+var db *sql.DB
+
 func Connect() (*sql.DB, error) {
 	err := godotenv.Load()
 	if err != nil {

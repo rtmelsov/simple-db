@@ -1,4 +1,4 @@
-package albums
+package models
 
 import "context"
 
@@ -13,4 +13,3 @@ type AlbumRepo interface {
 	GetAlbums(context.Context) ([]Album, error)
 	AddAlbum(context.Context, Album) (int, error)
 }
-

@@ -1,12 +1,16 @@
 package handlers
 
 import (
-	"github.com/rmelsov/simple-db/internal/database
-	"github.com/rmelsov/simple-db/internal/models
+	"database/sql"
+	"github.com/rtmelsov/simple-db/internal/database"
+	"github.com/rtmelsov/simple-db/internal/models"
 )
 
-func addAlbum(title, artist string, price float64) error {
-	db := database.getDB()
+func AddAlbum(title, artist string, price float64) error {
+	db, err := database.Connect()
+	if err != nil {
+		return err
+	}
 	result, err := db.Exec("INSERT INTO album (title, artist, price) VALUES (?, ?, ?)", title, artist, price)
 	if err != nil {
 		return err
@@ -17,20 +21,28 @@ func addAlbum(title, artist string, price float64) error {
 	return nil
 }
 
-func getAlbumById(id int64) (*models.Album, error) {
-	db := database.getDB()
+func GetAlbumById(id int64) (*models.Album, error) {
+	db, err := database.Connect()
+	var a models.Album
+	if err != nil {
+		return nil, err
+	}
 	row := db.QueryRow("SELECT * FROM album WHERE id = ?", id)
-	if err := row.Scan(&a.ID, &a.Title, &a.Artist, &a.Price); err != nil {
+	err = row.Scan(&a.ID, &a.Title, &a.Artist, &a.Price)
+	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, sql.ErrNoRows
 		}
-		return a, nil
+		return &a, nil
 	}
-	return a, nil
+	return &a, nil
 }
 
-func getAlbumsByArtis(name string) ([]models.Album, error) {
-	db := database.getDB()
+func GetAlbumsByArtis(name string) ([]models.Album, error) {
+	db, err := database.Connect()
+	if err != nil {
+		return nil, err
+	}
 	var albums []models.Album
 	rows, err := db.Query("SELECT * FROM album WHERE artist = ?", name)
 	if err != nil {
@@ -38,7 +50,7 @@ func getAlbumsByArtis(name string) ([]models.Album, error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var alb Album
+		var alb models.Album
 		if err := rows.Scan(&alb.ID, &alb.Title, &alb.Artist, &alb.Price); err != nil {
 			return nil, err
 		}

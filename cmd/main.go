@@ -21,14 +21,9 @@ func main() {
 
 	fmt.Println("db is connected")
 	defer db.Close()
-	objs, err := handlers.GetAlbumsByArtis("John Coltrane")
-	obj, err := handlers.GetAlbumById(3)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("albums: %v\r\n", objs)
-	fmt.Printf("album: %v\r\n", obj)
-
 	albums := []models.Album{
 		{Title: "love is hurt", Artist: "Andi Topalidis", Price: 56.56},
 		{Title: "graduation", Artist: "Ye", Price: 33.56},
